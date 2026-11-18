@@ -1,6 +1,11 @@
 # Slow 4G phone trace findings
 
-Raw trace: [`traces/slow-4g-live.json`](../traces/slow-4g-live.json) (Chrome trace JSON, about 20 MB; open it in Chrome DevTools > Performance > Load profile).
+Raw traces (Chrome trace JSON; open them in Chrome DevTools > Performance > Load profile):
+
+- Before the fixes: [`traces/slow-4g-live.json`](../traces/slow-4g-live.json) (about 20 MB)
+- After the fixes: [`traces/slow-4g-live-after-fixes.json`](../traces/slow-4g-live-after-fixes.json) (about 8 MB). See [After the fixes](#after-the-fixes).
+
+The sections up to "Late elements and fixes" describe the first trace, taken before the fixes.
 
 ## What was traced
 
@@ -68,7 +73,7 @@ All four were already in the server HTML, so they were drawn in the first frame 
 
 This is different from what Diego's profile expects: it says `main-photo` should be the largest-content element. Here the "photo" is a grey `<div>` with a small text label, which doesn't count as an image for LCP, so the heading wins. Once a real photo goes in, LCP should move to the photo and its time will depend on how fast the photo loads.
 
-## Watched test IDs
+## Watched test IDs (before the fixes)
 
 | Test ID | On the page? |
 |---|---|
@@ -78,33 +83,84 @@ This is different from what Diego's profile expects: it says `main-photo` should
 | `main-photo` | **No.** The photo box uses `data-testid="photo-placeholder"` |
 | `price` | **No.** The price `<p>` has no `data-testid` |
 
-1 of the 5 is present. The profile fails the launch check when any watched element is missing, so the check can't pass yet.
+1 of the 5 was present. The profile fails the launch check when any watched element is missing, so the check couldn't pass. All five are present after the fixes.
 
 ## Late elements and fixes
 
-The trace found nothing late and no movement, because the current page has no real photo and the font arrived before first paint. These fixes are for the risks that come up once the real content is in, and for the missing test IDs.
+The first trace found nothing late and no movement, because the page has no real photo yet and the font arrived before first paint. These fixes cover the risks that come up once the real content is in, plus the missing test IDs. All three are now done (see [After the fixes](#after-the-fixes)).
 
-### Main photo
+### Main photo: done (photo space reserved)
 
 - **Risk:** a late photo with no reserved space would push the size grid down by 375 px. The trace doesn't show this today, because the placeholder `<div>` has a fixed 375 x 375 box. The risk comes back as soon as the placeholder is swapped for a real image.
-- **Fix:** use `next/image` with `width={375}` and `height={375}` (or a box with `aspect-ratio: 1 / 1`), so the space is reserved before the image arrives. Give it a source at least 1125 px wide for 3x screens, use `priority` loading (it is the first-screen image and should be the LCP), and add `data-testid="main-photo"`.
+- **Done:** the placeholder is now the real photo slot: a box that is always exactly 375 x 375 CSS px (`h-[375px] w-[375px] aspect-square shrink-0`), with `data-testid="main-photo"`, `role="img"`, an `aria-label` and a short visible label. A TODO in `app/page.tsx` says to put `next/image` inside this same box when a photo exists.
+- **Still to do when there's a photo:** put `next/image` inside the same 375 x 375 box, with `width={375}` and `height={375}`, so the space stays reserved before the image arrives. Give it a source at least 1125 px wide for 3x screens, use `priority` loading (it is the first-screen image and should be the LCP), and keep `data-testid="main-photo"`.
 
-### Price and name text (Geist web font)
+### Price and name text (Geist web font): done (no late font swap)
 
 - **Risk:** a late font swap can change the line height and move the grid. In this trace the font loaded before first paint, so no swap happened. Under `font-display: swap` a slower connection could still swap it after first paint.
-- **Fix:** keep the fixed line heights (`leading-7`, `leading-5`, `leading-6`), and set the font to `display: "optional"` in `next/font` or use the system font stack, so a late font is never swapped in. Add `data-testid="price"` to the price.
+- **Done:** the Geist and Geist Mono web fonts were removed and the page now uses the system font stack, so there is no font file to arrive late. The fixed line heights (28, 20 and 24 px) are kept, and `data-testid="price"` is on the price.
+- **Fix as listed:** keep the fixed line heights (`leading-7`, `leading-5`, `leading-6`), and set the font to `display: "optional"` in `next/font` or use the system font stack, so a late font is never swapped in. Add `data-testid="price"` to the price.
 
 ### "Select size" heading
 
 - **No fix needed.** The "Select a size" error message sits inside a fixed 24 px row (`h-6`) next to the heading, so showing it doesn't move the grid. The trace confirms the grid sits at 535 px, which counts that row as 24 px.
 
-### The four missing test IDs
+### The four missing test IDs: done
 
-The check needs all four before it can pass:
+The check needs all four before it can pass. All four are now on the page:
 
 - `data-testid="size-button"` on every in-stock and low-stock size button
 - `data-testid="size-button-sold-out"` on every sold-out size button
 - `data-testid="main-photo"` on the photo (in place of `photo-placeholder`)
 - `data-testid="price"` on the price
 
-The page code was not changed for this hand-in. These fixes are still to do.
+## After the fixes
+
+The live page was traced again after the fixes were deployed (commit `74860fa`), with the same settings as the first trace: 375 x 812 at 3x, mobile and touch on, the MCP's Slow 4G preset (562.5 ms latency), 4x CPU slowdown, and a cache-ignoring reload. Raw trace: [`traces/slow-4g-live-after-fixes.json`](../traces/slow-4g-live-after-fixes.json).
+
+### New numbers
+
+| | Before the fixes | After the fixes |
+|---|---|---|
+| TTFB | 573 ms | 568 ms |
+| First paint / FCP | 2,928 ms | 1,792 ms |
+| LCP | 2,926 ms, `<h1>` "Nike Pegasus 43" | 1,790 ms, `<h1>` "Nike Pegasus 43" |
+| Fully loaded (load event) | 7,539 ms | 2,790 ms |
+| Layout shifts | 0 | **0** (0 `LayoutShift` events in the trace, 0 from the in-page observer) |
+| CLS | 0.00 | **0.00** |
+| Size grid top at first paint | 535 px | **535 px** |
+| Size grid top when fully loaded | 535 px | **535 px** |
+| Size grid movement | 0 px | **0 px** |
+| Web font files downloaded | 2 Geist `.woff2` files | **None** (the 9 requests were the HTML, 1 CSS file, 6 JS files and the favicon) |
+| Watched test IDs found | 1 of 5 | **5 of 5** |
+
+Test IDs found on the live page after the fixes:
+
+| Test ID | Found |
+|---|---|
+| `size-grid` | 1 |
+| `size-button` | 22 (all 62 x 64 px) |
+| `size-button-sold-out` | 4 (all 62 x 64 px, in their own grid places) |
+| `main-photo` | 1 (375 x 375 px at top 0) |
+| `price` | 1 ("$140.00", 343 x 24 px) |
+
+The photo, name, colourway and price were all drawn at first paint (1,792 ms) and kept the same boxes as before: 375 x 375, 343 x 28, 343 x 20 and 343 x 24. Nothing changed size.
+
+**LCP is still the heading, not `main-photo`.** The photo slot is a grey box with a short text label, which doesn't count as an image for LCP. It will become the LCP once a real photo is put in the slot with `next/image` and `priority`.
+
+### What changed in the code
+
+| File | Change |
+|---|---|
+| `pegasus-page/app/components/SizeGrid.tsx` | Each size button gets `data-testid="size-button"`, or `data-testid="size-button-sold-out"` when it is sold out. The grid layout is unchanged: 5 per row, 62 x 64 buttons, 8 px gaps. `data-testid="size-grid"` is kept. |
+| `pegasus-page/app/page.tsx` | The photo box is now the photo slot. It is always exactly 375 x 375 (`h-[375px] w-[375px] aspect-square shrink-0`), has `data-testid="main-photo"` in place of `photo-placeholder`, `role="img"` with an `aria-label`, and a short visible label. It also has a TODO to put `next/image` (`width={375}`, `height={375}`, `priority`, a source at least 1125 px wide) inside the same box. The price `<p>` gets `data-testid="price"`. |
+| `pegasus-page/app/layout.tsx` | Removed the Geist and Geist Mono `next/font/google` imports and their CSS variables. |
+| `pegasus-page/app/globals.css` | `--font-sans` is now the system font stack: `system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`. The Geist font variables were removed. |
+
+### Fixes
+
+- [x] **Test IDs:** all five watched test IDs are on the page.
+- [x] **Reserved photo space:** a fixed 375 x 375 slot with a 1 / 1 aspect ratio.
+- [x] **No late font swap:** no web fonts, so nothing can swap in after first paint.
+
+Not changed: `speed-budget.json` and the size grid's layout.

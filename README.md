@@ -31,7 +31,8 @@ The page is planned at **375 px wide**, with a first screen of 375 x 667 px. Eve
 | `notes/trace-findings.md` | Findings from the Slow 4G phone trace of the live page: layout shifts, size grid position, LCP, test IDs, and fixes |
 | `notes/trace-prompt.md` | The prompt used to record the trace |
 | `notes/speed-budget-notes.md` | What the three values in `speed-budget.json` mean, and how they match Diego's profile |
-| `traces/slow-4g-live.json` | The raw Chrome performance trace (Slow 4G, 4x CPU, 375 x 812 at 3x) |
+| `traces/slow-4g-live.json` | The raw Chrome performance trace before the fixes (Slow 4G, 4x CPU, 375 x 812 at 3x) |
+| `traces/slow-4g-live-after-fixes.json` | The raw Chrome performance trace after the fixes, with the same settings |
 | `notes/page-plan-final.md` | The final plan document: the page plan, the final prompt, what I checked, and my decisions |
 | `notes/PAGE_PLAN.md` | The page plan Claude Code wrote from `prompt.md` |
 | `notes/prompt.md` | The prompt that produced the plan, with the fixed requirements |
