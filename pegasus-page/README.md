@@ -30,7 +30,7 @@ To see the page as it will look after launch (10 Dec 2026), open http://localhos
 | `app/components/SizeGrid.tsx` | The 26-button size grid (5 per row, 62 x 64 px) |
 | `app/components/SizePicker.tsx` | The Sizes section: the grid, the selection line and the sticky Add to bag / Notify me button |
 | `lib/stock.ts` | Reads the stock JSON, sorts it by `display_order`, and works out the launch date |
-| `data/nike_pegasus_size_stock_b2ebb9fac7f74d6a8bb3432d7642176f.json` | The size and stock list the page reads from |
+| `data/pegasus_stock_snapshot_2026-12-08.json` | The size and stock list the page reads from (the 8 December 2026 snapshot) |
 
 ## Placeholders and TODOs
 

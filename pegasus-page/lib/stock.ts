@@ -1,4 +1,4 @@
-import stockData from "@/data/nike_pegasus_size_stock_b2ebb9fac7f74d6a8bb3432d7642176f.json";
+import stockData from "@/data/pegasus_stock_snapshot_2026-12-08.json";
 
 export type StockStatus = "in_stock" | "low_stock" | "sold_out";
 
