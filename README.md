@@ -43,6 +43,7 @@ The live page on my phone, with M 4.5 / W 6 / EU 36.5 selected.
 | [`traces/slow-4g-live-after-fixes.json`](traces/slow-4g-live-after-fixes.json) | The raw Chrome performance trace after the fixes, with the same settings |
 | [`lighthouse/`](lighthouse/) | Mobile Lighthouse setup and reports for the live page: `config.js` (Diego's settings) and `run-1` to `run-3` as JSON and HTML |
 | [`notes/lighthouse-results.md`](notes/lighthouse-results.md) | The Lighthouse results: the 3 scores and median, pass or fail for each speed budget key, metrics and top suggestions |
+| [`notes/launch-lighthouse-prompt.md`](notes/launch-lighthouse-prompt.md) | The prompt used to confirm the Vercel launch and run mobile Lighthouse on the live page |
 | [`notes/page-plan-final.md`](notes/page-plan-final.md) | The final plan document: the page plan, the final prompt, what I checked, and my decisions |
 | [`notes/PAGE_PLAN.md`](notes/PAGE_PLAN.md) | The page plan Claude Code wrote from `prompt.md` |
 | [`notes/prompt.md`](notes/prompt.md) | The prompt that produced the plan, with the fixed requirements |
