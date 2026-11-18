@@ -5,6 +5,7 @@
 - **Run:** 18 November 2026 (UTC), Lighthouse 13.6.0 (`npx lighthouse@13.6.0`), Google Chrome on this Windows machine, headless
 - **Reports:** [`lighthouse/`](../lighthouse): `run-1`, `run-2` and `run-3`, each as `.report.json` and `.report.html`
 - **Config:** [`lighthouse/config.js`](../lighthouse/config.js)
+- **Stock data changed after these runs:** the page now uses the 8 December 2026 stock snapshot. That only changes which size buttons are greyed out, not their size (62 x 64 px) or position.
 
 ## Settings used
 
