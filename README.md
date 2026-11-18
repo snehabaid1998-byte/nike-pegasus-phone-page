@@ -33,6 +33,8 @@ The page is planned at **375 px wide**, with a first screen of 375 x 667 px. Eve
 | `notes/speed-budget-notes.md` | What the three values in `speed-budget.json` mean, and how they match Diego's profile |
 | `traces/slow-4g-live.json` | The raw Chrome performance trace before the fixes (Slow 4G, 4x CPU, 375 x 812 at 3x) |
 | `traces/slow-4g-live-after-fixes.json` | The raw Chrome performance trace after the fixes, with the same settings |
+| `lighthouse/` | Mobile Lighthouse setup and reports for the live page: `config.js` (Diego's settings) and `run-1` to `run-3` as JSON and HTML |
+| `notes/lighthouse-results.md` | The Lighthouse results: the 3 scores and median, pass or fail for each speed budget key, metrics and top suggestions |
 | `notes/page-plan-final.md` | The final plan document: the page plan, the final prompt, what I checked, and my decisions |
 | `notes/PAGE_PLAN.md` | The page plan Claude Code wrote from `prompt.md` |
 | `notes/prompt.md` | The prompt that produced the plan, with the fixed requirements |
