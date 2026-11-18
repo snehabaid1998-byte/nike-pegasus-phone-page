@@ -9,15 +9,20 @@ export default function Page() {
 
   return (
     <main className="mx-auto w-full max-w-[375px] bg-white text-neutral-900">
-      {/* 1. Photos. TODO: placeholder, there are no photos in the JSON. */}
+      {/* 1. Photos. This box is the real photo slot. It is always exactly
+          375 x 375 CSS px (width, height and aspect-ratio 1 / 1), so a photo that
+          arrives later can never change its height or move the size grid.
+          TODO: there are no photos in the JSON yet. When there are, swap the label
+          for next/image inside this same box: width={375}, height={375}, priority,
+          and a source at least 1125 px wide (375 px x 3 for 3x phone screens). */}
       <section aria-label="Photos">
         <div
           role="img"
-          aria-label="Photo placeholder"
-          data-testid="photo-placeholder"
-          className="flex h-[375px] w-[375px] items-center justify-center bg-neutral-200 text-sm text-neutral-600"
+          aria-label="Nike Pegasus 43 photo (placeholder)"
+          data-testid="main-photo"
+          className="flex aspect-square h-[375px] w-[375px] shrink-0 items-center justify-center overflow-hidden bg-neutral-200 text-sm text-neutral-600"
         >
-          Photo placeholder (375 x 375)
+          <span aria-hidden="true">Photo placeholder (375 x 375)</span>
         </div>
       </section>
 
@@ -25,7 +30,7 @@ export default function Page() {
       <section aria-label="Name and price" data-testid="name-and-price" className="px-4 pt-4">
         <h1 className="text-[22px] leading-7 font-semibold">{product?.product_name}</h1>
         <p className="mt-1 text-sm leading-5 text-neutral-600">{product?.colorway}</p>
-        <p className="mt-2 text-lg leading-6 font-medium">{product ? priceFormat.format(product.price) : ""}</p>
+        <p data-testid="price" className="mt-2 text-lg leading-6 font-medium">{product ? priceFormat.format(product.price) : ""}</p>
       </section>
 
       {/* 3. Sizes, with the Add to bag / Notify me button directly under the size buttons. */}

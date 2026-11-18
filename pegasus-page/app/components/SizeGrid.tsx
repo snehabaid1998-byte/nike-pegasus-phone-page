@@ -40,6 +40,7 @@ export default function SizeGrid({ sizes, selectedSku, onSelect, showError, labe
           <button
             key={size.sku}
             type="button"
+            data-testid={soldOut ? "size-button-sold-out" : "size-button"}
             data-sku={size.sku}
             data-status={status}
             data-display-order={size.display_order}
