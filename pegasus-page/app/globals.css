@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  background: #ffffff;
+  color: #171717;
+}
+
+/* Sold-out size buttons: a diagonal line through the button. */
+.sold-out-strike {
+  background-image: linear-gradient(
+    to top right,
+    transparent calc(50% - 0.5px),
+    #a3a3a3 calc(50% - 0.5px),
+    #a3a3a3 calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
+  );
+}
